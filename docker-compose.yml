@@ -1,0 +1,51 @@
+version: "3.7"
+
+services:
+  # image project
+  web_service_restful:
+    build:
+      args:
+        user: milena
+        uid: 1000
+      context: .
+      dockerfile: Dockerfile
+    # restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    # depends_on:
+    #     - redis
+    networks:
+      - web_service_restful_network
+
+  # nginx
+  nginx:
+    image: nginx:alpine
+    # restart: unless-stopped
+    ports:
+      - "8888:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - web_service_restful_network
+
+  # db mysql
+  db_web_service_restful:
+    image: mysql:5.7.22
+    platform: linux/x86_64
+    # restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-userpass}
+      MYSQL_USER: ${DB_USERNAME:-username}
+    volumes:
+      - ./.docker/mysql/dbdata:/var/lib/mysql
+    ports:
+      - "3388:3306"
+    networks:
+      - web_service_restful_network
+networks:
+  web_service_restful_network:
+    driver: bridge
