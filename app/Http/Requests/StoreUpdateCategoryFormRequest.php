@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class StoreUpdateCategoryFormRequest extends FormRequest
 {
@@ -21,8 +22,10 @@ class StoreUpdateCategoryFormRequest extends FormRequest
      */
     public function rules(): array
     {
+        // $id = Request::segment(2);
+
         return [
-            'name' => 'required|min:3|max:100|unique:categories'
+            'name' => "required|min:3|max:100|unique:categories,name,{$this->segment(2)},id"
         ];
     }
 }
