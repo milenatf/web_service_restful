@@ -35,17 +35,17 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        // $category = $this->category->find($id);
+        $category = $this->category->find($id);
 
-        // if(!$category)
-        //     return response()->json($category, 404);
+        if(!$category)
+            return response()->json('A categoria não existe!', 404);
 
-        // $update = $this->category->update($request->all());
+        $update = $category->update($request->all());
 
-        // if(!$update)
-        //     return response()->json('Não foi possível atualizar a categoria', 500);
+        if(!$update)
+            return response()->json('Não foi possível atualizar a categoria', 500);
 
-        // return response()->json($category, 200);
+        return response()->json($category, 200);
 
     }
 }
