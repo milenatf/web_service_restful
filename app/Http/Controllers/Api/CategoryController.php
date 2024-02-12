@@ -29,7 +29,7 @@ class CategoryController extends Controller
         $category = $this->category->create($request->all());
 
         if( !$category )
-            return response()->json('Não foi possível cadastrar a categoria!', 500);
+            return response()->json(['error' => 'Não foi possível cadastrar a categoria!'], 500);
 
         return response()->json($category, 201);
     }
@@ -39,13 +39,37 @@ class CategoryController extends Controller
         $category = $this->category->find($id);
 
         if(!$category)
-            return response()->json('A categoria não existe!', 404);
+            return response()->json(['error' => 'A categoria não existe!'], 404);
 
         $update = $category->update($request->all());
 
         if(!$update)
-            return response()->json('Não foi possível atualizar a categoria', 500);
+            return response()->json(['error' => 'Não foi possível atualizar a categoria'], 500);
 
         return response()->json($category, 200);
+    }
+
+    public function show($id)
+    {
+        $category = $this->category->find($id);
+
+        if(!$category)
+            return response()->json(['erro' => 'A categoria não existe!'], 404);
+
+        return response()->json($category, 200);
+    }
+
+    public function destroy($id)
+    {
+        $category = $this->category->find($id);
+
+        if(!$category)
+            return response()->json(['error' => 'A categoria não existe!'], 404);
+
+        if(!$category->delete())
+            return response()->json(['error' => 'Não foi possível excluir a categoria!'], 500);
+
+        return response()->json(['success' => 'A categoria foi excluída com sucesso!'], 204);
+
     }
 }
