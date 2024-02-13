@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUpdateCategoryFormRequest;
@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 
 use App\Models\Category;
 
+use function PHPUnit\Framework\isEmpty;
+
 class CategoryController extends Controller
 {
-    private $category;
+    private $category, $totalPage = 10;
 
     public function __construct(Category $category)
     {
@@ -71,5 +73,18 @@ class CategoryController extends Controller
 
         return response()->json(['success' => 'A categoria foi excluída com sucesso!'], 204);
 
+    }
+
+    public function products($id)
+    {
+        if(!$category = $this->category->find($id))
+            return response()->json(['error' => 'Não foram encontrados produtos para esta categogria.'], 404);
+
+        $products = $category->products()->paginate($this->totalPage);
+
+        return response()->json([
+            'category' => $category,
+            'products' => $products
+        ], 200);
     }
 }

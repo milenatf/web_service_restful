@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -70,9 +70,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = $this->product->find($id);
-
-        if(!$product)
+        if(!$product = $this->product->with('category')->find($id))
             return response()->json(['erro' => 'Produto não encontrado'], 404);
 
         return response()->json($product, 200);
